@@ -1,0 +1,18 @@
+Solid Solver
+    Input File  = cylinder-solid.dat
+    Time Integration Scheme = GA
+    Time Integration Parameters = 0.0 
+
+Fluid Solver
+    Input File  = cylinder-fluid.dat
+    Time Integration Scheme = GA
+    Time Integration Parameters = 0.0 
+
+Coupling Scheme
+    Type = Dirichlet-Neumann
+    Predictor Order = 2
+    Beta = 0.1
+
+Time Control
+    Time Step = 0.01
+    Final Time = 1.0

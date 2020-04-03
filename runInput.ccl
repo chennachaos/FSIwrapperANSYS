@@ -1,0 +1,252 @@
+&replace  LIBRARY:
+   CEL:
+     EXPRESSIONS:
+       CylinDisp = U0*t
+       U0 = 3.0 [m/s]
+     END
+   END
+   MATERIAL: Water
+     Material Description = Water (liquid)
+     Material Group = Water Data, Constant Property Liquids
+     Option = Pure Substance
+     Thermodynamic State = Liquid
+     PROPERTIES:
+       Option = General Material
+       EQUATION OF STATE:
+         Density = 997.0 [kg m^-3]
+         Molar Mass = 18.02 [kg kmol^-1]
+         Option = Value
+       END
+       SPECIFIC HEAT CAPACITY:
+         Option = Value
+         Specific Heat Capacity = 4181.7 [J kg^-1 K^-1]
+         Specific Heat Type = Constant Pressure
+       END
+       REFERENCE STATE:
+         Option = Specified Point
+         Reference Pressure = 1 [atm]
+         Reference Specific Enthalpy = 0.0 [J/kg]
+         Reference Specific Entropy = 0.0 [J/kg/K]
+         Reference Temperature = 25 [C]
+       END
+       DYNAMIC VISCOSITY:
+         Dynamic Viscosity = 8.899E-4 [kg m^-1 s^-1]
+         Option = Value
+       END
+       THERMAL CONDUCTIVITY:
+         Option = Value
+         Thermal Conductivity = 0.6069 [W m^-1 K^-1]
+       END
+       ABSORPTION COEFFICIENT:
+         Absorption Coefficient = 1.0 [m^-1]
+         Option = Value
+       END
+       SCATTERING COEFFICIENT:
+         Option = Value
+         Scattering Coefficient = 0.0 [m^-1]
+       END
+       REFRACTIVE INDEX:
+         Option = Value
+         Refractive Index = 1.0 [m m^-1]
+       END
+       THERMAL EXPANSIVITY:
+         Option = Value
+         Thermal Expansivity = 2.57E-04 [K^-1]
+       END
+     END
+   END
+ END
+ &replace  FLOW: Flow Analysis 1
+   SOLUTION UNITS:
+     Angle Units = [rad]
+     Length Units = [m]
+     Mass Units = [kg]
+     Solid Angle Units = [sr]
+     Temperature Units = [K]
+     Time Units = [s]
+   END
+   ANALYSIS TYPE:
+     Option = Transient
+     EXTERNAL SOLVER COUPLING:
+       Option = None
+     END
+     INITIAL TIME:
+       Option = Automatic
+     END
+     TIME DURATION:
+       Number of Timesteps per Run = 1
+       Option = Number of Timesteps per Run
+     END
+     TIME STEPS:
+       Option = Timesteps
+       Timesteps = 0.02 [s]
+     END
+   END
+   DOMAIN: cylinder
+     Coord Frame = Coord 0
+     Domain Type = Fluid
+     Location = Assembly
+     BOUNDARY: cylinderwall
+       Boundary Type = WALL
+       Location = cylinderwall
+       BOUNDARY CONDITIONS:
+         MASS AND MOMENTUM:
+           Option = No Slip Wall
+           Wall Velocity Relative To = Mesh Motion
+         END
+         MESH MOTION:
+           Option = Specified Displacement
+           DISPLACEMENT:
+             Displacement X Component = CylinDisp
+             Displacement Y Component = 0 [m]
+             Displacement Z Component = 0 [m]
+             Option = Cartesian Components
+           END
+         END
+       END
+     END
+     BOUNDARY: inlet
+       Boundary Type = OPENING
+       Location = inlet
+       BOUNDARY CONDITIONS:
+         FLOW DIRECTION:
+           Option = Normal to Boundary Condition
+         END
+         FLOW REGIME:
+           Option = Subsonic
+         END
+         MASS AND MOMENTUM:
+           Option = Opening Pressure and Direction
+           Relative Pressure = 0 [Pa]
+         END
+         MESH MOTION:
+           Option = Stationary
+         END
+       END
+     END
+     BOUNDARY: outlet
+       Boundary Type = OPENING
+       Location = F24.27
+       BOUNDARY CONDITIONS:
+         FLOW DIRECTION:
+           Option = Normal to Boundary Condition
+         END
+         FLOW REGIME:
+           Option = Subsonic
+         END
+         MASS AND MOMENTUM:
+           Option = Opening Pressure and Direction
+           Relative Pressure = 0 [Pa]
+         END
+         MESH MOTION:
+           Option = Stationary
+         END
+       END
+     END
+     BOUNDARY: symmetrywalls
+       Boundary Type = SYMMETRY
+       Location = symmetry
+       BOUNDARY CONDITIONS:
+         MESH MOTION:
+           Option = Unspecified
+         END
+       END
+     END
+     DOMAIN MODELS:
+       BUOYANCY MODEL:
+         Option = Non Buoyant
+       END
+       DOMAIN MOTION:
+         Option = Stationary
+       END
+       MESH DEFORMATION:
+         Displacement Relative To = Previous Mesh
+         Option = Regions of Motion Specified
+         MESH MOTION MODEL:
+           Option = Displacement Diffusion
+           MESH STIFFNESS:
+             Option = Increase near Small Volumes
+             Stiffness Model Exponent = 2.0
+             REFERENCE VOLUME:
+               Option = Mean Control Volume
+             END
+           END
+         END
+       END
+       REFERENCE PRESSURE:
+         Reference Pressure = 1 [atm]
+       END
+     END
+     FLUID DEFINITION: Fluid 1
+       Material = Water
+       Option = Material Library
+       MORPHOLOGY:
+         Option = Continuous Fluid
+       END
+     END
+     FLUID MODELS:
+       COMBUSTION MODEL:
+         Option = None
+       END
+       HEAT TRANSFER MODEL:
+         Fluid Temperature = 25 [C]
+         Option = Isothermal
+       END
+       THERMAL RADIATION MODEL:
+         Option = None
+       END
+       TURBULENCE MODEL:
+         Option = Laminar
+       END
+     END
+   END
+   INITIALISATION:
+     Option = Automatic
+     INITIAL CONDITIONS:
+       Velocity Type = Cartesian
+       CARTESIAN VELOCITY COMPONENTS:
+         Option = Automatic with Value
+         U = 0 [m s^-1]
+         V = 0 [m s^-1]
+         W = 0 [m s^-1]
+       END
+       STATIC PRESSURE:
+         Option = Automatic with Value
+         Relative Pressure = 0 [Pa]
+       END
+     END
+   END
+   OUTPUT CONTROL:
+     RESULTS:
+       File Compression Level = Default
+       Option = Standard
+     END
+     TRANSIENT RESULTS: Transient Results 1
+       File Compression Level = Default
+       Option = Standard
+       OUTPUT FREQUENCY:
+         Option = Every Timestep
+       END
+     END
+   END
+   SOLVER CONTROL:
+     ADVECTION SCHEME:
+       Option = High Resolution
+     END
+     CONVERGENCE CONTROL:
+       Maximum Number of Coefficient Loops = 10
+       Minimum Number of Coefficient Loops = 1
+       Timescale Control = Coefficient Loops
+     END
+     CONVERGENCE CRITERIA:
+       Residual Target = 1.E-4
+       Residual Type = RMS
+     END
+     TRANSIENT SCHEME:
+       Option = Second Order Backward Euler
+       TIMESTEP INITIALISATION:
+         Option = Automatic
+       END
+     END
+   END
+ END
